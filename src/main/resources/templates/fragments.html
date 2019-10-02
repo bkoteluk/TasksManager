@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<div th:fragment = "AddTask">
+    <a class="btn btn-outline-secondary" href="/newtask" role="button">Dodanie nowego zadania
+    </a>
+</div>
+
+<div th:fragment = "TasksList">
+    <a class="btn btn-outline-secondary" href="/" role="button">Pełna lista zadań
+    </a>
+</div>
+
+<div th:fragment = "ToDoList">
+    <a class="btn btn-outline-secondary" href="/todo" role="button">Zadania do wykonania
+    </a>
+</div>
+
+<div th:fragment = "ArchiveTask">
+    <a class="btn btn-outline-secondary" href="/archive" role="button">Zadania archiwalne
+    </a>
+</div>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <title>Nowe zadanie</title>
+</head>
+<body>
+<div class = "row">
+    <div th:replace="fragments::TasksList"></div>
+    <div th:replace="fragments::ToDoList"></div>
+    <div th:replace="fragments::ArchiveTask"></div>
+</div>
+<br/>
+<hr>
+<br/>
+<div class="form-row">
+    <form method="post" th:action="@{/save}" th:object="${newTask}">
+        <input th:field = "*{title}" type = text placeholder="Tytuł zadania">
+        <textarea th:field = "*{description}" type = text placeholder="opis"></textarea>
+        <input th:field = "*{startDate}" type="date" placeholder="początkowy data i czas">
+
+        <select th:field = "*{category}">
+            <option th:each="category : ${T(pl.bogdank.tasksmanager.model.TaskCategory).values()}"
+                    th:value="${category.name()}" th:text="${category.description}" ></option>
+        </select>
+        <input type="submit" value = "Zapisz">
+    </form>
+</div>
+
+</body>
+</html>

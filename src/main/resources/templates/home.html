@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:color="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <title>Strona główna</title>
+</head>
+<body>
+<div class = "row">
+    <div th:replace="fragments::ToDoList"></div>
+    <div th:replace="fragments::ArchiveTask"></div>
+    <div th:replace="fragments::AddTask"></div>
+</div>
+<br/>
+<hr>
+<br/>
+<ul class="list-group">
+    <div th:each = "taskWithAttribute: ${tasksWithAttribute}">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div  th:if="${taskWithAttribute.afterNow}" >
+                <div class = "row" th:if="${taskWithAttribute.task.endDate} == null">
+                    <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
+                        <p th:text="${taskWithAttribute.task.title}">
+                        </p>
+                    </a>
+                    <p  th:style="|color: red; font-style: italic|"  th:text="|  ${taskWithAttribute.task.description}  ${taskWithAttribute.task.category}   ${taskWithAttribute.task.startDate}  zadanie nieukończone |" ></p>
+                </div>
+                <div class = "row" th:if="${taskWithAttribute.task.endDate} != null">
+                    <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
+                        <p th:text="${taskWithAttribute.task.title}">
+                        </p>
+                    </a>
+                    <p  th:style="|color: blue; font-style: italic |" th:text="| ${taskWithAttribute.task.description}  ${taskWithAttribute.task.category}
+                        ${taskWithAttribute.task.startDate}  ${taskWithAttribute.task.endDate}   zadanie ukończono w ${taskWithAttribute.duration} dni | ">
+                    </p>
+                </div>
+            </div>
+            <div class = "row" th:unless="${taskWithAttribute.afterNow}" >
+                <div class = "row" th:if="${taskWithAttribute.task.endDate} == null">
+                    <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
+                        <p th:text="${taskWithAttribute.task.title}">
+                        </p>
+                    </a>
+                    <p   th:text="|  ${taskWithAttribute.task.description}  ${taskWithAttribute.task.category}  ${taskWithAttribute.task.startDate}  zadanie nieukończone|" >
+                    </p>
+                </div>
+                <div class = "row" th:if="${taskWithAttribute.task.endDate} != null">
+                    <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
+                        <p th:text="${taskWithAttribute.task.title}">
+                        </p>
+                    </a>
+                    <p  th:text="|  ${taskWithAttribute.task.description}  ${taskWithAttribute.task.category}  ${taskWithAttribute.task.startDate}
+                        ${taskWithAttribute.task.endDate}  zadanie ukończono w  ${taskWithAttribute.duration} dni|" >
+                    </p>
+                </div>
+            </div>
+        </li>
+    </div>
+
+</ul>
+
+</body>
+</html>
