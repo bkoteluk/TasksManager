@@ -16,20 +16,52 @@
 <hr>
 <br/>
 <div class="row">
-    <form method="post" th:action="@{/save}" th:object="${task}">
-        <input type = text th:value = "*{title}"  name ="title" id = "title"  >
-        <textarea type = text th:text="*{description}"  name = "description" id="description" ></textarea>
-        <input type="date" th:value = "*{startDate}"  mane = "startDate" id = "startDate">
-        <input type="date" th:value = "*{endDate}"  mane = "endDate" id = "endDate">
-        <select th:field = "*{category}"  name = "category" id = "category">
-            <option th:each="category : ${T(pl.bogdank.tasksmanager.model.TaskCategory).values()}"
-                    th:field = "*{category}"
-                    th:value="${task.category}"
-                    th:selected = "${task.category}">
-            </option>
-        </select>
+    <form method="post" th:action="@{/edit}" th:object="${task}">
+        <div class="form-group">
+            <label for="idtask">Tytuł zadania</label>
+            <input inputmode="" type = text th:value = "*{id}"  name ="id" id = "idtask"  readonly>
+        </div>
+        <div class="form-group">
+            <label for="title">Tytuł zadania</label>
+            <input type = text th:value = "*{title}"  name ="title" id = "title"  >
+        </div>
+        <div class="form-group">
+            <label for="description">Opis zadania</label>
+            <textarea type = text th:text="*{description}"  name = "description" id="description" ></textarea>
+        </div>
+        <div class="form-group">
+            <label for="startdate">Planowana data rozpoczęcia </label>
+            <input type="date" th:value = "*{startDate}"  mane = "startDate" id = "startDate" >
+        </div>
+        <div class="form-group">
+            <label for="startdate">Data zakończenia </label>
+            <input type="date" th:value = "*{endDate}"  mane = "endDate" id = "endDate" >
+        </div>
+        <div class="form-group">
+            <label for="category">Kategoria</label>
+            <select th:field = "*{category}" th:remove="all-but-first"  name = "category" id = "category">
+                <option th:each="category : ${T(pl.bogdank.tasksmanager.model.TaskCategory).values()}"
+                    th:value="${category}"
+                    th:text= "${category.description}">
+                </option>
+            </select>
+        </div>
 
-         <input type="submit" value = "Zapisz">
+        <button type="submit" name = "action" value = "edit">Zapisz zmiany</button>
+    </form>
+
+
+    <form method="get" th:action="@{/archivetask}" th:object="${task}">
+        <div class="form-group">
+            <label for="taskid">Id zadania</label>
+            <input type = text th:value = "*{id}"  name ="id" id = "taskid" readonly>
+        </div>
+        <div class="form-group">
+            <label for="titleforarch">Tytuł zadania</label>
+            <input type = text th:value = "*{title}"  name ="title" id = "titleforarch"  >
+        </div>
+
+        <button type="submit" name = "action" value = "archivetask">Oznacz zadanie jako nieaktywne</button>
     </form>
 </div>
 

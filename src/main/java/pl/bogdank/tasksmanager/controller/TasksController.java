@@ -3,28 +3,20 @@ package pl.bogdank.tasksmanager.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.bogdank.tasksmanager.model.TaskWithAttribute;
-import pl.bogdank.tasksmanager.model.Task;
-import pl.bogdank.tasksmanager.util.TaskDateComparator;
+import pl.bogdank.tasksmanager.entity.Task;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.time.temporal.ChronoUnit;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
+import static pl.bogdank.tasksmanager.util.TaskAttributes.addTasksAttributes;
 
 @Controller
 public class TasksController {
-
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -32,25 +24,10 @@ public class TasksController {
     @GetMapping("/")
     public String home(Model model) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<TaskWithAttribute> tasksWithAttribute = new ArrayList<>();
-        TaskDateComparator dateComparator = new TaskDateComparator();
-        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t", Task.class);
+        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t order by t.startDate", Task.class);
         List<Task> tasks = query.getResultList();
 
-        Collections.sort(tasks, dateComparator);
-
-        for (Task task : tasks) {
-            long duration = -1;
-            if (task.getEndDate() != null)
-                duration = DAYS.between(task.getStartDate(), task.getEndDate());
-
-            if (task.getStartDate().isAfter(LocalDate.now())) {
-                tasksWithAttribute.add(new TaskWithAttribute(task,false, duration));
-            } else
-                tasksWithAttribute.add(new TaskWithAttribute(task,true, duration));
-        }
-
-        model.addAttribute("tasksWithAttribute", tasksWithAttribute);
+        model.addAttribute("tasksWithAttribute", addTasksAttributes(tasks));
 
         return "home";
     }
@@ -58,51 +35,22 @@ public class TasksController {
     @GetMapping("/todo")
     public String toDoList(Model model) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<TaskWithAttribute> tasksWithAttribute = new ArrayList<>();
-        TaskDateComparator dateComparator = new TaskDateComparator();
-        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t WHERE (t.endDate IS NULL) ", Task.class);
+        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t  WHERE (t.endDate IS NULL) order by t.startDate", Task.class);
         List<Task> tasks = query.getResultList();
 
-        Collections.sort(tasks, dateComparator);
-
-        for (Task task : tasks) {
-           if (task.getStartDate().isAfter(LocalDate.now())) {
-                tasksWithAttribute.add(new TaskWithAttribute(task,false, -1));
-            } else
-                tasksWithAttribute.add(new TaskWithAttribute(task,true, -1));
-        }
-
-        model.addAttribute("tasksWithAttribute", tasksWithAttribute);
+        model.addAttribute("tasksWithAttribute", addTasksAttributes(tasks));
 
         return "todolist";
     }
 
-
     @GetMapping("/archive")
     public String archiveList(Model model) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        LocalDate now = LocalDate.now();
-        List<TaskWithAttribute> tasksWithAttribute = new ArrayList<>();
-        TaskDateComparator dateComparator = new TaskDateComparator();
-        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t WHERE ((t.startDate < :today) and (t.endDate IS NOT NULL))", Task.class);
-        query.setParameter("today", now);
+        TypedQuery<Task> query = entityManager.createQuery("SELECT t FROM Task t WHERE t.isOpen = false order by t.startDate", Task.class);
 
         List<Task> tasks = query.getResultList();
 
-        Collections.sort(tasks, dateComparator);
-
-        for (Task task : tasks) {
-            long duration = -1;
-            if (task.getEndDate() != null)
-                duration = DAYS.between(task.getStartDate(), task.getEndDate());
-
-            if (task.getStartDate().isAfter(LocalDate.now())) {
-                tasksWithAttribute.add(new TaskWithAttribute(task,false, duration));
-            } else
-                tasksWithAttribute.add(new TaskWithAttribute(task,true, duration));
-        }
-
-        model.addAttribute("tasksWithAttribute", tasksWithAttribute);
+        model.addAttribute("tasksWithAttribute", addTasksAttributes(tasks));
 
         return "archivelist";
     }
@@ -127,16 +75,32 @@ public class TasksController {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Task task = entityManager.find(Task.class, id);
         model.addAttribute("task", task);
+        model.addAttribute("id", id);
         return "edittask";
     }
 
-    @PostMapping("/edit")
-    public String editTask(Task task) {
+    @PostMapping(value = "/edit", params = "id")
+    public String saveChangedTask(@RequestParam("id") long id, Task taskModel) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-
+        Task task = entityManager.find(Task.class, id);
+        task.setTitle(taskModel.getTitle());
+        task.setDescription(taskModel.getDescription());
+        task.setCategory(taskModel.getCategory());
+        task.setStartDate(taskModel.getStartDate());
+        task.setEndDate(taskModel.getEndDate());
         entityManager.getTransaction().commit();
         return "redirect:/";
+    }
+
+    @GetMapping("/archivetask")
+    public String editTask(@RequestParam Long id) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        Task task = entityManager.find(Task.class, id);
+        task.setOpen(false);
+        entityManager.getTransaction().commit();
+        return "redirect:/archive";
     }
 
 }

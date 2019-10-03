@@ -1,6 +1,9 @@
-package pl.bogdank.tasksmanager.model;
+package pl.bogdank.tasksmanager.entity;
 
+import net.bytebuddy.implementation.bind.annotation.Default;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.bogdank.tasksmanager.model.TaskCategory;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,17 +22,31 @@ public class Task {
     private TaskCategory category;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+
+    @Type(type = "numeric_boolean")
+
+    private boolean isOpen;
 
     public Task() {
     }
 
-    public Task(String title, String description, TaskCategory category, LocalDate startDate, LocalDate endDate) {
+    public Task(String title, String description, TaskCategory category, LocalDate startDate, LocalDate endDate, boolean isOpen) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isOpen = isOpen;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public Long getId() {

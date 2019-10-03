@@ -15,20 +15,42 @@
     <br/>
     <hr>
     <br/>
-    <div class="row">
-        <ul class="list-group">
-            <div th:each = "taskWithAttribute: ${tasksWithAttribute}">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
-                        <p th:text="${taskWithAttribute.task.title}">
-                        </p>
-                    </a>
-                    <p  th:style="|color: blue; font-style: italic |" th:text="| ${taskWithAttribute.task.description}  ${taskWithAttribute.task.category}
-                        ${taskWithAttribute.task.startDate}  ${taskWithAttribute.task.endDate}   zadanie ukończono w ${taskWithAttribute.duration} dni | ">
-                    </p>
-                </li>
-            </div>
-        </ul>
+
+    <div >
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th >Tytuł zadania</th>
+                <th >Opis</th>
+                <th>Kategoria</th>
+                <th>Data początkowa</th>
+                <th>Data zamknięcia</th>
+                <th>Zadanie zakończono w(dni):</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "taskWithAttribute: ${tasksWithAttribute}">
+                <td> <a th:href="@{'/edit?id=' + ${taskWithAttribute.task.id}}" >
+                    <p th:text="${taskWithAttribute.task.title}">
+                    </p></a>
+                </td>
+                <div>
+                    <td th:style="|color: blue; font-style: italic |" th:text="${taskWithAttribute.task.description}"></td>
+                    <td th:style="|color: blue; font-style: italic |" th:text="${taskWithAttribute.task.category}"></td>
+                    <td th:style="|color: blue; font-style: italic |" th:text="${taskWithAttribute.task.startDate}"></td>
+                    <td th:style="|color: blue; font-style: italic |" th:text="${taskWithAttribute.task.endDate}"></td>
+                    <div  th:if="${taskWithAttribute.task.endDate} != null">
+                        <td th:style="|color: blue; font-style: italic |" th:text="|${taskWithAttribute.duration} |"></td>
+                    </div>
+                    <div  th:unless="${taskWithAttribute.task.endDate} != null">
+                        <td th:style="|color: blue; font-style: italic |" th:text="|nieukończone |"></td>
+                    </div>
+                </div>
+
+            </tr>
+
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

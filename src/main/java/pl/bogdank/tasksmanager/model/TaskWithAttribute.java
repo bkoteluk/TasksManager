@@ -1,5 +1,7 @@
 package pl.bogdank.tasksmanager.model;
 
+import pl.bogdank.tasksmanager.entity.Task;
+
 public class TaskWithAttribute {
     Task task;
     boolean afterNow;

@@ -17,14 +17,25 @@
 <br/>
 <div class="form-row">
     <form method="post" th:action="@{/save}" th:object="${newTask}">
-        <input th:field = "*{title}" type = text placeholder="Tytuł zadania">
-        <textarea th:field = "*{description}" type = text placeholder="opis"></textarea>
-        <input th:field = "*{startDate}" type="date" placeholder="początkowy data i czas">
-
-        <select th:field = "*{category}">
-            <option th:each="category : ${T(pl.bogdank.tasksmanager.model.TaskCategory).values()}"
+        <div class="form-group">
+            <label for="title">Tytuł zadania</label>
+            <input th:field = "*{title}" type = text placeholder="Tytuł zadania" id="title">
+        </div>
+        <div class="form-group">
+            <label for="description">Opis zadania</label>
+            <textarea th:field = "*{description}" type = text placeholder="Opis zadania :" id="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="startdate">Planowana data rozpoczęcia </label>
+            <input th:field = "*{startDate}" type="date" id="startdate">
+        </div>
+        <div class="form-group">
+            <label for="category">Kategoria</label>
+            <select th:field = "*{category}" id="category">
+                <option th:each="category : ${T(pl.bogdank.tasksmanager.model.TaskCategory).values()}"
                     th:value="${category.name()}" th:text="${category.description}" ></option>
-        </select>
+            </select>
+        </div>
         <input type="submit" value = "Zapisz">
     </form>
 </div>
