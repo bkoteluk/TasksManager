@@ -38,12 +38,18 @@
                 <div>
                     <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.description}"></td>
                     <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.category}"></td>
-                    <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.startDate}"></td>
-                    <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.endDate}"></td>
+                    <div  th:if="${taskWithAttribute.task.startDate} != null">
+                        <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.startDate}"></td>
+                    </div>
+                    <div  th:unless="${taskWithAttribute.task.startDate} != null">
+                        <td th:style="|color: red; font-style: italic |" >brak</td>
+                    </div>
                     <div  th:if="${taskWithAttribute.task.endDate} != null">
+                        <td th:style="|color: red; font-style: italic |" th:text="${taskWithAttribute.task.endDate}"></td>
                         <td th:style="|color: red; font-style: italic |" th:text="|${taskWithAttribute.duration} |"></td>
                     </div>
                     <div  th:unless="${taskWithAttribute.task.endDate} != null">
+                        <td th:style="|color: red; font-style: italic |" >brak</td>
                         <td th:style="|color: red; font-style: italic |" th:text="| nieukończone |"></td>
                     </div>
                 </div>

@@ -14,13 +14,15 @@ public class TaskAttributes {
         List<TaskWithAttribute> tasksWithAttribute = new ArrayList<>();
         for (Task task : tasks) {
             long duration = -1;
-            if (task.getEndDate() != null)
+            if (task.getEndDate() != null && task.getStartDate() != null)
                 duration = DAYS.between(task.getStartDate(), task.getEndDate());
-
-            if (task.getStartDate().isAfter(LocalDate.now())) {
-                tasksWithAttribute.add(new TaskWithAttribute(task,false, duration));
+            if (task.getStartDate() != null) {
+                if (task.getStartDate().isAfter(LocalDate.now())) {
+                    tasksWithAttribute.add(new TaskWithAttribute(task,false, duration));
+                } else
+                    tasksWithAttribute.add(new TaskWithAttribute(task,true, duration));
             } else
-                tasksWithAttribute.add(new TaskWithAttribute(task,true, duration));
+                tasksWithAttribute.add(new TaskWithAttribute(task,false, duration));
         }
         return tasksWithAttribute;
     }
